@@ -1,0 +1,54 @@
+-- upgrade --
+CREATE TABLE IF NOT EXISTS "asrmodel" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "label" VARCHAR(255) NOT NULL UNIQUE,
+    "description" TEXT NOT NULL,
+    "lang" VARCHAR(30) NOT NULL  DEFAULT 'english',
+    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS "usermodel" (
+    "id" UUID NOT NULL  PRIMARY KEY,
+    "email" VARCHAR(255) NOT NULL UNIQUE,
+    "hashed_password" VARCHAR(255) NOT NULL,
+    "is_active" BOOL NOT NULL  DEFAULT True,
+    "is_superuser" BOOL NOT NULL  DEFAULT False,
+    "is_verified" BOOL NOT NULL  DEFAULT False,
+    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS "idx_usermodel_email_7287ba" ON "usermodel" ("email");
+CREATE TABLE IF NOT EXISTS "mediafile" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "filename" VARCHAR(255) NOT NULL,
+    "duration" INT NOT NULL,
+    "size" INT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "uuid" UUID NOT NULL,
+    "user_id" UUID NOT NULL REFERENCES "usermodel" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "result" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "filename" VARCHAR(255) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "media_file_id" INT NOT NULL REFERENCES "mediafile" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "task" (
+    "id" UUID NOT NULL  PRIMARY KEY,
+    "status" VARCHAR(8) NOT NULL  DEFAULT 'enqueued',
+    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "message_data" BYTEA NOT NULL,
+    "actor_name" VARCHAR(300),
+    "queue_name" VARCHAR(100),
+    "asr_model_id" INT NOT NULL REFERENCES "asrmodel" ("id") ON DELETE CASCADE,
+    "media_file_id" INT NOT NULL REFERENCES "mediafile" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "aerich" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "version" VARCHAR(255) NOT NULL,
+    "app" VARCHAR(20) NOT NULL,
+    "content" JSONB NOT NULL
+);

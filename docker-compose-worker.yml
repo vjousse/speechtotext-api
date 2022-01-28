@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  dramatiq:
+    build:
+      context: .
+      dockerfile: Dockerfile-kaldi-worker
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file: .env               #currently unused
+
+    command: dramatiq asr_worker.download
+    #tty: true
+    #stdin_open: true
+
+    volumes:
+      - ./asr/kaldi/models.fr/data:/opt/asr/kaldi/system/data
+      - ./asr/kaldi/models.fr/extractor/:/opt/asr/kaldi/system/extractor
+      - ./asr/kaldi/models.fr/tdnn_smbr/:/opt/asr/kaldi/system/tdnn_smbr
+      - ./output:/opt/asr/kaldi/output
+      - .:/speechtotext-api
+    environment:
+      - REDIS_HOST=host.docker.internal
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - BASE_URL=http://host.docker.internal
