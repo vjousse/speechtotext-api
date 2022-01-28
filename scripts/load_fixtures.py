@@ -7,13 +7,10 @@ from app.core.config import settings
 from app.crud import asr_model_crud
 
 
-async def create_asr_model(
-        label: str, description: str, lang: Lang):
+async def create_asr_model(label: str, description: str, lang: Lang):
 
     asr_model_create = AsrModelCreate(
-        label=label,
-        description=description,
-        lang=lang.value
+        label=label, description=description, lang=lang.value
     )
 
     await asr_model_crud.create(asr_model_create)
@@ -32,8 +29,7 @@ async def create_user(email="phil@phil.com", password="phil"):
 
 async def main():
     await Tortoise.init(
-        db_url=settings.DB_URL,
-        modules={'models': settings.TORTOISE_MODELS}
+        db_url=settings.DB_URL, modules={"models": settings.TORTOISE_MODELS}
     )
     # Generate the schema
     await Tortoise.generate_schemas()

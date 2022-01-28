@@ -9,24 +9,26 @@ from app.views.file import current_active_user
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def test_file_upload(app: FastAPI,
-                     client: TestClient,
-                     db_verified_user: UserModel,
-                     default_model: AsrModel) -> None:
+def test_file_upload(
+    app: FastAPI,
+    client: TestClient,
+    db_verified_user: UserModel,
+    default_model: AsrModel,
+) -> None:
 
     # Authenticate the user
-    app.dependency_overrides[current_active_user] = \
-        lambda: db_verified_user
+    app.dependency_overrides[current_active_user] = lambda: db_verified_user
 
-    # See https://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files for more documentation
+    # See https://docs.python-requests.org/en/latest/user/advanced/
+    # #post-multiple-multipart-encoded-files for more documentation
     multiple_files = [
-        ('files', open(f"{dir_path}/../fixtures/fileupload.txt", 'rb')),
-        ('files', open(f"{dir_path}/../fixtures/fileupload.txt", 'rb')),
+        ("files", open(f"{dir_path}/../fixtures/fileupload.txt", "rb")),
+        ("files", open(f"{dir_path}/../fixtures/fileupload.txt", "rb")),
     ]
 
     response = client.post(
         "/files/upload/",
-        data={'asr_model_id': default_model.id},
+        data={"asr_model_id": default_model.id},
         files=multiple_files,
     )
 

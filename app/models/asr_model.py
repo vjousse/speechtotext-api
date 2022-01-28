@@ -11,7 +11,8 @@ class AsrModel(Model):
     lang = fields.CharField(
         max_length=30,
         choices=[(enum.value, enum.value.capitalize()) for enum in Lang],
-        default=Lang.EN.value)
+        default=Lang.EN.value,
+    )
 
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)

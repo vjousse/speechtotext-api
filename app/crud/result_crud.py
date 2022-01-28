@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(settings.LOG_LEVEL)
 
 
-async def create(
-        result_create: ResultCreate) -> Result:
+async def create(result_create: ResultCreate) -> Result:
 
     task = await task_crud.get(id=result_create.message_id)
 
@@ -23,10 +22,9 @@ async def create(
     if task:
         media_file_id = task.media_file_id
 
-
     new_result = await Result.create(
-        **result_create.dict(),
-        media_file_id = media_file_id)
+        **result_create.dict(), media_file_id=media_file_id
+    )
 
     return new_result
 
@@ -36,13 +34,10 @@ async def get(id: int) -> Optional[Result]:
     return result
 
 
-async def move_to_upload(
-        result: ResultCreate,
-        file: UploadFile) -> bool:
+async def move_to_upload(result: ResultCreate, file: UploadFile) -> bool:
 
     file_service.save_upload_file(
-        file,
-        Path(settings.UPLOAD_DIR, result.filename)
+        file, Path(settings.UPLOAD_DIR, result.filename)
     )
 
     return True

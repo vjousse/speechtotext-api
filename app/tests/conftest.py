@@ -25,7 +25,7 @@ def app() -> Generator:
     app = create_app()
     yield app
 
-    files = glob.glob(f'{settings.UPLOAD_DIR}/*')
+    files = glob.glob(f"{settings.UPLOAD_DIR}/*")
     for f in files:
         os.remove(f)
 
@@ -34,10 +34,7 @@ def app() -> Generator:
 def client(app) -> Generator:
     db_url = os.environ.get("TORTOISE_TEST_DB", settings.DB_URL)
 
-    initializer(
-        settings.TORTOISE_MODELS,
-        db_url=db_url,
-        app_label="models")
+    initializer(settings.TORTOISE_MODELS, db_url=db_url, app_label="models")
 
     with TestClient(app) as c:
         yield c
@@ -51,10 +48,7 @@ def myclient() -> Generator:
     app = create_app()
     db_url = os.environ.get("TORTOISE_TEST_DB", settings.DB_URL)
 
-    initializer(
-        settings.TORTOISE_MODELS,
-        db_url=db_url,
-        app_label="models")
+    initializer(settings.TORTOISE_MODELS, db_url=db_url, app_label="models")
 
     with TestClient(app) as c:
         yield c
@@ -79,13 +73,12 @@ excalibur_password_hash = get_password_hash("excalibur")
 def default_model(event_loop: asyncio.AbstractEventLoop) -> AsrModel:
 
     asr_model_create = AsrModelCreate(
-        label="fr.kaldi",
-        description="French Kaldi model",
-        lang=Lang.FR
+        label="fr.kaldi", description="French Kaldi model", lang=Lang.FR
     )
 
     asr_model = event_loop.run_until_complete(
-        asr_model_crud.create(asr_model_create))
+        asr_model_crud.create(asr_model_create)
+    )
 
     return asr_model
 
@@ -101,8 +94,9 @@ def verified_user() -> UserModel:
 
 
 @pytest.fixture(scope="module")
-def db_verified_user(verified_user,
-                     event_loop: asyncio.AbstractEventLoop) -> UserModel:
+def db_verified_user(
+    verified_user, event_loop: asyncio.AbstractEventLoop
+) -> UserModel:
 
     event_loop.run_until_complete(verified_user.save())
 

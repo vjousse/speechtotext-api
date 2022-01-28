@@ -8,8 +8,8 @@ class Result(Model):
     id = fields.IntField(pk=True)
     filename = fields.CharField(max_length=255)
     media_file = fields.ForeignKeyField(
-        'models.MediaFile',
-        related_name='results')
+        "models.MediaFile", related_name="results"
+    )
 
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)

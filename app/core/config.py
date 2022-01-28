@@ -23,9 +23,7 @@ class Settings(BaseSettings):
 
     BASE_URL: str = "http://localhost:8000"
 
-    CORS_ALLOWED_ORIGINS = [
-        "*"
-    ]
+    CORS_ALLOWED_ORIGINS = ["*"]
 
     LOG_LEVEL = "DEBUG"
 
@@ -53,20 +51,16 @@ class Settings(BaseSettings):
     ASSETS_DIR = os.path.join(current_dir, "..", "..", "assets")
     ASSETS_URL = "/assets"
 
-    WORKER_DOCKER_COMMAND = \
-        "/opt/asr/kaldi/system/simply_decode.pl"
+    WORKER_DOCKER_COMMAND = "/opt/asr/kaldi/system/simply_decode.pl"
 
-    WORKER_OUTPUT_DIRECTORY = \
-        "/opt/asr/kaldi/output"
+    WORKER_OUTPUT_DIRECTORY = "/opt/asr/kaldi/output"
 
 
 settings = Settings()
 
 # Used by aerich
 TORTOISE_ORM = {
-    "connections": {
-        "default": settings.DB_URL
-    },
+    "connections": {"default": settings.DB_URL},
     "apps": {
         "models": {
             "models": settings.TORTOISE_MODELS,

@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 import shutil
 import subprocess
+
 # import time
 import os
 
@@ -26,45 +27,42 @@ def download_url(url, asr_model_label):
 
     message_id = CurrentMessage.get_current_message().message_id
 
-    local_filename = url.split('/')[-1]
+    local_filename = url.split("/")[-1]
 
     filename, _ = os.path.splitext(local_filename)
 
     with requests.get(settings.BASE_URL + url, stream=True) as r:
-        with open(local_filename, 'wb') as f:
+        with open(local_filename, "wb") as f:
             shutil.copyfileobj(r.raw, f)
 
-    output_directory = os.path.join(
-        settings.WORKER_OUTPUT_DIRECTORY,
-        filename)
+    output_directory = os.path.join(settings.WORKER_OUTPUT_DIRECTORY, filename)
 
     Path(output_directory).mkdir(parents=True, exist_ok=True)
 
     logger.debug(f"Decoding output {output_directory}")
 
-    p = subprocess.Popen([
-        settings.WORKER_DOCKER_COMMAND,
-        local_filename,
-        output_directory],
+    p = subprocess.Popen(
+        [settings.WORKER_DOCKER_COMMAND, local_filename, output_directory],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        close_fds=True)
+        close_fds=True,
+    )
 
     output = p.stdout.read()
     logger.debug(output)
 
     p.terminate()
 
-    files = {'file': open(os.path.join(output_directory, "out.ctm"), 'r')}
+    files = {"file": open(os.path.join(output_directory, "out.ctm"), "r")}
 
     response = requests.post(
         f"{settings.BASE_URL}/api/results/",
         files=files,
         data={
             "filename": f"{message_id}.result.ctm",
-            "message_id": message_id
-        }
+            "message_id": message_id,
+        },
     )
 
     print(response.text)

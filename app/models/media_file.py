@@ -12,8 +12,8 @@ class MediaFile(Model):
     duration = fields.IntField()
     size = fields.IntField()
     user = fields.ForeignKeyField(
-        'models.UserModel',
-        related_name='media_files')
+        "models.UserModel", related_name="media_files"
+    )
 
     tasks: fields.ReverseRelation["Task"]
     results: fields.ReverseRelation["Result"]

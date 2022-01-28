@@ -7,8 +7,7 @@ from app.core.config import settings
 
 from tortoise import Tortoise
 
-Tortoise.init_models(
-    settings.TORTOISE_MODELS, "models")
+Tortoise.init_models(settings.TORTOISE_MODELS, "models")
 
 
 from app.core.init import create_app  # noqa: E402

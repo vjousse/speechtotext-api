@@ -6,13 +6,13 @@ result_views = APIRouter()
 
 
 @result_views.post("/", response_model=Result)
-async def create(filename: str = Form(...),
-                 message_id: str = Form(...),
-                 file: UploadFile = File(...)):
+async def create(
+    filename: str = Form(...),
+    message_id: str = Form(...),
+    file: UploadFile = File(...),
+):
 
-    result_create = ResultCreate(
-        message_id=message_id,
-        filename=filename)
+    result_create = ResultCreate(message_id=message_id, filename=filename)
 
     result = await result_crud.create(result_create)
 

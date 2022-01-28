@@ -26,8 +26,9 @@ class MediaFile(MediaFileBase):
         orm_mode = True
 
 
-MediaFilePopulated =\
-    pydantic_model_creator(MediaFileModel, name="MediaFilePopulated")
+MediaFilePopulated = pydantic_model_creator(
+    MediaFileModel, name="MediaFilePopulated"
+)
 
 
 class FilesList(BaseModel):

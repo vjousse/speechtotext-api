@@ -9,12 +9,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(settings.LOG_LEVEL)
 
 
-async def create(
-        asr_model_create: AsrModelCreate) -> AsrModel:
+async def create(asr_model_create: AsrModelCreate) -> AsrModel:
 
-    new_asr_model = await AsrModel.create(
-        **asr_model_create.dict()
-    )
+    new_asr_model = await AsrModel.create(**asr_model_create.dict())
 
     return new_asr_model
 
@@ -26,8 +23,6 @@ async def get(id: int) -> Optional[AsrModel]:
 
 async def get_all() -> List[AsrModel]:
 
-    models = await AsrModel\
-        .all()\
-        .order_by('lang')
+    models = await AsrModel.all().order_by("lang")
 
     return models

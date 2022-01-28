@@ -11,49 +11,43 @@ from app.services import file_service
 
 
 async def create(
-        media_file_create: MediaFileCreate,
-        user_id: uuid.UUID) -> MediaFile:
+    media_file_create: MediaFileCreate, user_id: uuid.UUID
+) -> MediaFile:
 
     new_media_file = await MediaFile.create(
-        **media_file_create.dict(),
-        uuid=uuid.uuid4(),
-        user_id=user_id)
+        **media_file_create.dict(), uuid=uuid.uuid4(), user_id=user_id
+    )
 
     return new_media_file
 
 
-async def move_to_upload(
-        media_file: MediaFile,
-        file: UploadFile) -> bool:
+async def move_to_upload(media_file: MediaFile, file: UploadFile) -> bool:
 
     file_service.save_upload_file(
-        file,
-        Path(settings.UPLOAD_DIR, media_file.uploaded_filename())
+        file, Path(settings.UPLOAD_DIR, media_file.uploaded_filename())
     )
 
     return True
 
 
-async def count_all_for_user(
-        user: UserModel) -> int:
+async def count_all_for_user(user: UserModel) -> int:
 
-    count = await MediaFile\
-        .filter(user_id=user.id)\
-        .all()\
-        .count()
+    count = await MediaFile.filter(user_id=user.id).all().count()
 
     return count
 
 
 async def get_all_for_user(
-        user: UserModel, offset: int = 0, limit: int = 10) -> List[MediaFile]:
+    user: UserModel, offset: int = 0, limit: int = 10
+) -> List[MediaFile]:
 
-    files = await MediaFile\
-        .filter(user_id=user.id)\
-        .order_by('-created_at')\
-        .limit(limit)\
-        .offset(offset)\
-        .all()\
-        .prefetch_related('tasks', 'results', 'tasks__asr_model')
+    files = (
+        await MediaFile.filter(user_id=user.id)
+        .order_by("-created_at")
+        .limit(limit)
+        .offset(offset)
+        .all()
+        .prefetch_related("tasks", "results", "tasks__asr_model")
+    )
 
     return files
