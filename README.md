@@ -1,5 +1,9 @@
 # Speech to text - API
 
+This project provides a simple HTTP API as a frontend to any Sppech Recognition service like [Kaldi](https://kaldi-asr.org). It's even more generic: it provides a simple interface to any script taking a file as input and sending multiple files as results.
+
+It's written in Python using [FastAPI](https://fastapi.tiangolo.com/) for the web framework, [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) for the async ORM and [dramatiq](https://dramatiq.io/) for managing the background tasks. The stack is using Nginx, Redis and PostgreSQL. And of course, everything is available using Docker images.
+
 ## Docker
 
 ### Web application
@@ -93,7 +97,3 @@ Returns:
     "token_type":"bearer"
 }
 ```
-
-## Tasks
-
-Use [dramatiq](https://dramatiq.io/)?
