@@ -18,17 +18,24 @@ def test_file_upload(app: FastAPI,
     app.dependency_overrides[current_active_user] = \
         lambda: db_verified_user
 
-    files = {'file': open(f"{dir_path}/../fixtures/fileupload.txt", 'r')}
+    # See https://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files for more documentation
+    multiple_files = [
+        ('files', open(f"{dir_path}/../fixtures/fileupload.txt", 'rb')),
+        ('files', open(f"{dir_path}/../fixtures/fileupload.txt", 'rb')),
+    ]
 
     response = client.post(
         "/files/upload/",
-        files=files,
-        data={'asr_model_id': default_model.id}
+        data={'asr_model_id': default_model.id},
+        files=multiple_files,
     )
 
-    print(response.text)
+    json = response.json()
 
-    assert response.json()["filename"] == "fileupload.txt"
-    assert response.json()["user_id"] == str(db_verified_user.id)
+    assert len(json) == 2
+    assert json[0]["filename"] == "fileupload.txt"
+    assert json[1]["filename"] == "fileupload.txt"
+    assert json[0]["user_id"] == str(db_verified_user.id)
+    assert json[1]["user_id"] == str(db_verified_user.id)
 
     assert response.status_code == 201
