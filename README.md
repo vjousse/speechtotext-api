@@ -4,6 +4,10 @@ This project provides a simple HTTP API as a frontend to any Sppech Recognition 
 
 It's written in Python using [FastAPI](https://fastapi.tiangolo.com/) for the web framework, [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) for the async ORM and [dramatiq](https://dramatiq.io/) for managing the background tasks. The stack is using Nginx, Redis and PostgreSQL. And of course, everything is available using Docker images.
 
+## Client
+
+A frontend client developped using Elm can be found [here](https://github.com/vjousse/speechtotext-api-client).
+
 ## Docker
 
 ### Web application
