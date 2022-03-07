@@ -20,7 +20,7 @@ A frontend client developped using Elm can be found [here](https://github.com/vj
 
 ## Install
 
-    pip install -r requirements.txt
+    pip install -r config/requirements.txt
 
 ## Run
 
