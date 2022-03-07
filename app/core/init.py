@@ -1,16 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import register_tortoise
 from fastapi_users import FastAPIUsers
 
 from app.core.config import settings
-from app.schemas.user import UserDB
-from app.services.fastapi_users import (
-    fastapi_users,
-    cookie_authentication,
-    jwt_authentication,
-)
+from app.services.fastapi_users import fastapi_users, auth_backend
 
 from app.services.dramatiq import init_dramatiq
 
@@ -75,55 +70,24 @@ def create_app() -> FastAPI:
 def register_fastapi_users(app: FastAPI) -> FastAPIUsers:
 
     app.include_router(
-        fastapi_users.get_auth_router(cookie_authentication),
-        prefix="/auth/cookie",
-        tags=["auth"],
-    )
-
-    app.include_router(
-        fastapi_users.get_auth_router(jwt_authentication),
+        fastapi_users.get_auth_router(auth_backend),
         prefix="/auth/jwt",
         tags=["auth"],
     )
 
     app.include_router(
-        fastapi_users.get_register_router(on_after_register),
-        prefix="/auth",
-        tags=["auth"],
-    )
-    app.include_router(
-        fastapi_users.get_reset_password_router(
-            settings.SECRET, after_forgot_password=on_after_forgot_password
-        ),
-        prefix="/auth",
-        tags=["auth"],
+        fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
     )
 
     app.include_router(
-        fastapi_users.get_verify_router(
-            settings.SECRET,
-            after_verification_request=after_verification_request,
-        ),
+        fastapi_users.get_reset_password_router(),
         prefix="/auth",
         tags=["auth"],
     )
     app.include_router(
-        fastapi_users.get_users_router(), prefix="/users", tags=["users"]
+        fastapi_users.get_verify_router(),
+        prefix="/auth",
+        tags=["auth"],
     )
 
     return fastapi_users
-
-
-def on_after_register(user: UserDB, request: Request):
-    print(f"User {user.id} has registered.")
-
-
-def on_after_forgot_password(user: UserDB, token: str, request: Request):
-    print(f"User {user.id} has forgot their password. Reset token: {token}")
-
-
-def after_verification_request(user: UserDB, token: str, request: Request):
-    print(
-        f"Verification requested for user {user.id}."
-        " Verification token: {token}"
-    )
